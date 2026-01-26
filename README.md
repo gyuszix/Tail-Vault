@@ -1,6 +1,9 @@
 # PiNAS
 
 A lightweight, secure NAS solution using a Raspberry Pi and Tailscale mesh networking. Access your files from anywhere over an encrypted WireGuard tunnel.
+Simple and very useful little project for anyone. Some of these steps are optional and are just my preferences. For example, you might be able to get away with using less memory or an earlier model.
+Equally, originally I wanted to use a NVMe hat and M.2 SSD but with the current SSD prices that seemed unreasonable. Since I ended up using an Portable SSD as my NAS storage I created two partitions, one in ext4 format while the other in exFAT.
+With this setup I can still carry around my SSD and use it on any OS should the need arise. 
 
 ## Hardware Requirements
 
@@ -27,8 +30,10 @@ A lightweight, secure NAS solution using a Raspberry Pi and Tailscale mesh netwo
 ### 1. Flash the OS
 
 Download [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/operating-systems/) and flash it to your SD card using [balenaEtcher](https://etcher.balena.io/).
+Alternatively use any other imager or the built in option on Linux.
 
 Before ejecting, enable SSH by creating an empty file named `ssh` in the boot partition:
+Alternatively, set up ssh options with the built in tools if you are using the official raspberry imager.
 
 ```bash
 touch /Volumes/boot/ssh
@@ -174,7 +179,7 @@ sudo systemctl enable --now nfs-kernel-server
 
 ### macOS
 
-Install Tailscale from the [App Store](https://apps.apple.com/app/tailscale/id1475387142) or via Homebrew:
+Install Tailscale from the [App Store](https://tailscale.com/download) or via Homebrew:
 
 ```bash
 brew install tailscale
@@ -375,10 +380,6 @@ id $USER
 ls -la /mnt/nas
 ```
 
-**Slow speeds**
-
-Your bottleneck is likely your ISP's upload speed. Test with `iperf3` to confirm the network ceiling.
-
 **NFS server not starting**
 
 ```bash
@@ -387,6 +388,42 @@ sudo exportfs -a
 ```
 
 ---
+
+## Limitations
+
+**Slow speeds**
+
+Your bottleneck is likely your ISP's upload speed. Test with `iperf3` to confirm the network ceiling. In my particular case my upload speed was capped at around 200Mbps. QuickMaths says that would mean downloading a 1Gb file would take about 40 seconds.
+
+## Future Work
+
+Some cool additions to this current setup:
+
+### ntfy — Push Notifications from the CLI
+
+[ntfy](https://ntfy.sh) is a simple pub/sub notification service that lets you send push notifications to your phone or desktop from scripts or the command line.
+
+Example use cases for a NAS:
+- Get notified when a large file transfer completes
+- Alert when the Pi reboots or goes offline
+- Monitor disk space and warn when running low
+
+Basic usage:
+```bash
+# Send a notification
+curl -d "Backup complete" ntfy.sh/your-topic
+
+# Or use the CLI
+ntfy publish your-topic "NAS is online"
+```
+
+You can self-host ntfy on the Pi itself or use the free public server at ntfy.sh. Install the app on your phone to receive notifications.
+
+### Other ideas
+
+- **Prometheus + Grafana** — Full monitoring stack for disk I/O, network throughput, and system metrics
+- **Healthchecks.io** — Dead man's switch to alert if the Pi stops checking in
+- **Restic/Borg** — Automated encrypted backups to cloud storage
 
 ## License
 
