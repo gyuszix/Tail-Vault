@@ -5,6 +5,9 @@ Simple and very useful little project for anyone. Some of these steps are option
 Equally, originally I wanted to use a NVMe hat and M.2 SSD but with the current SSD prices that seemed unreasonable. Since I ended up using an Portable SSD as my NAS storage I created two partitions, one in ext4 format while the other in exFAT.
 With this setup I can still carry around my SSD and use it on any OS should the need arise. 
 
+<img width="2553" height="1440" alt="Screenshot 2026-03-19 at 19 54 42" src="https://github.com/user-attachments/assets/1b8e704e-1ca1-448e-a16d-2160b4388ab8" />
+
+
 ## Hardware Requirements
 
 | Component | Minimum Spec | Notes |
